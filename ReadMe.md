@@ -8,7 +8,7 @@ To install the RabbitMQ service, follow these steps:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/rabbitmq-service.git
+    git clone https://github.com/Prosperibe12/rabbitmq-service.git
     ```
 2. Navigate to the project directory:
     ```bash
