@@ -1,7 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbitmq-service
+  name: rabbitmq
+  namespace: default
 spec:
   type: ClusterIP
   selector:
@@ -9,10 +10,9 @@ spec:
   ports:
     - name: http
       protocol: TCP
-      port: 15673
-      targetPort: 15673
+      port: 15672  # Changed from 15672 to match StatefulSet
+      targetPort: 15672
     - name: amqp
       protocol: TCP
-      port: 5673
-      targetPort: 5673
-
+      port: 5672  # Changed from 5672 to match StatefulSet
+      targetPort: 5672
