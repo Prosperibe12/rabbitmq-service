@@ -1,0 +1,80 @@
+# Configuration values for the RabbitMQ service
+
+projectNameOverride: rabbitmq 
+
+
+# Common labels for deployment
+commonLabels:
+  app: rabbitmq
+  tier: broker
+
+# Selector labels for the deployment
+selectorLabels:
+  app: rabbitmq
+
+# Replica count for the deployment
+replicaCount: 1
+
+# Image configuration for RabbitMQ
+
+image:
+  name: broker
+  repository: rabbitmq
+  tag: 3-management
+  pullPolicy: Always
+  ports: 
+    - name: http
+      containerPort: 15672
+      protocol: TCP
+    - name: amqp
+      containerPort: 5672
+      protocol: TCP 
+
+# Resource requests and limits for the RabbitMQ container
+resources: {}
+  # requests:
+  #   memory: "256Mi"
+  #   cpu: "250m"
+  # limits:
+  #   memory: "512Mi"
+  #   cpu: "500m"
+
+# Persistent volume claim configuration
+pvc:
+  mountPath: /var/lib/rabbitmq
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce 
+  storage: 1Gi 
+
+# Service configuration for RabbitMQ
+service:
+  clusterIP: None
+  ports:
+    - name: http
+      port: 15672
+      targetPort: 15672
+      protocol: TCP
+    - name: amqp
+      port: 5672
+      targetPort: 5672
+      protocol: TCP
+
+# Network policy configuration for RabbitMQ 
+networkPolicy:
+  policyTypes:
+    - Ingress 
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: authapi
+        - podSelector:
+            matchLabels: 
+              app: gatewayapi
+        - podSelector:
+            matchLabels:
+              app: converterapi
+        - podSelector:
+            matchLabels:
+              app: notificationapi

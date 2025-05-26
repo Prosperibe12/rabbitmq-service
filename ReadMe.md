@@ -20,5 +20,5 @@ To install the RabbitMQ service, follow these steps:
 To start the RabbitMQ service, run the following command:
 Ensure you have a kubernetes cluster running
 ```bash
-kubectl apply -f manifests
+helm install [release name] [chat path]
 ```

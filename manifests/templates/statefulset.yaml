@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "project.name" . }}-deployment
+  labels:
+    tier: {{ .Values.commonLabels.tier }}
+    app: {{ .Values.commonLabels.app }}
+spec:
+  serviceName: {{ include "project.name" . }}-svc
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.selectorLabels.app }}
+  template:
+    metadata: 
+      labels:
+        app: {{ .Values.selectorLabels.app }}
+    spec:
+      containers:
+        - name: {{ .Values.image.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.image.ports }}
+          ports:
+{{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+{{ toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: {{ include "project.name" . }}-pvc
+              mountPath: {{ .Values.pvc.mountPath }}
+  volumeClaimTemplates:
+    - metadata: 
+        name: {{ include "project.name" . }}-pvc 
+      spec:  
+        storageClassName: {{ .Values.pvc.storageClassName }}
+        accessModes: 
+{{ toYaml .Values.pvc.accessModes | nindent 10 }}
+        resources:
+          requests:
+            storage: {{ .Values.pvc.storage }}

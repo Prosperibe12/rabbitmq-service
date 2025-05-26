@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "project.name" . }}-netpol
+  labels:
+    app: {{ .Values.commonLabels.app }}
+    tier: {{ .Values.commonLabels.tier }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Values.selectorLabels.app }}
+  policyTypes:
+    {{- toYaml .Values.networkPolicy.policyTypes | nindent 2 }}
+  {{- with .Values.networkPolicy.ingress }} 
+  ingress:
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
